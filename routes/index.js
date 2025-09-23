@@ -9,7 +9,7 @@ router.post("/", (req, res) => {
   Trip.find({
     departure: {$regex : new RegExp (departure, 'i')},
     arrival: {$regex : new RegExp (arrival, 'i')},
-    //date: date,
+    date: date,
   })
   .then((data) => {
     res.json({ trips : data });
