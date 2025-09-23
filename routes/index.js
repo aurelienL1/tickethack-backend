@@ -3,7 +3,7 @@ var router = express.Router();
 const Trip = require("../models/trips");
 const { checkBody } = require("../modules/checkBody");
 
-/* GET home page. */
+/* POST user search. */
 router.post("/", (req, res) => {
   const { departure, arrival, date } = req.body;
   try {

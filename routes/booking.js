@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 const Booking = require("../models/bookings");
 
-/* GET home page. */
+/* GET all bookings */
 router.get("/", (req, res) => {
   try {
     Booking.find({}).then((data) => {
