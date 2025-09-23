@@ -19,7 +19,7 @@ router.post("/", async function (req, res) {
 
     await newBooking.save();
     res.json({ result: true, message: "Purchase successfully done." });
-  } catch (error) {
+   }catch (error) {
     return res.json({ result: false, error: "Something wrong happened while purchasing." });
   }
 });

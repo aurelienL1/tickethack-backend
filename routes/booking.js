@@ -1,9 +1,19 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
+const Booking = require("../models/bookings");
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get("/", (req, res) => {
+  try {
+    Booking.find({}).then((data) => {
+      res.json({ bookings: data });
+    });
+  } catch (error) {
+    return res.json({
+      result: false,
+      error: "Something wrong happened while getting bookings.",
+    });
+  }
 });
 
 module.exports = router;
