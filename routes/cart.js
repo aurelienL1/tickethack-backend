@@ -8,8 +8,7 @@ const Cart = require("../models/carts");
 router.get("/", async function (req, res) {
   try {
     const trips = await Cart.find();
-    console.log(trips);
-    res.json({ result: true });
+    res.json({ result: true, trips });
   } catch (error) {
     return res.json({
       result: false,
@@ -20,15 +19,13 @@ router.get("/", async function (req, res) {
 
 // POST /cart when user want to purchase trips
 router.post("/purchase", async function (req, res) {
-  const { trips } = req.body;
-  if (!checkBody(req.body, ["trips"])) {
-    return res
-      .status(500)
-      .json({ result: false, error: "Missing or empty fields" });
+  const { cart } = req.body;
+  if (!checkBody(req.body, ["cart"])) {
+    return res.status(500).json({ result: false, error: "Missing or empty fields" });
   }
 
   try {
-    const tripsId = trips.map((trip) => trip._id);
+    const tripsId = cart.trips.map((trip) => trip._id);
     const newBooking = new Booking({
       purchaseDate: Date.now(),
       trips: tripsId,
@@ -48,16 +45,14 @@ router.post("/purchase", async function (req, res) {
 router.delete("/", async function (req, res) {
   const { trip } = req.body;
   if (!checkBody(req.body, ["trip"])) {
-    return res
-      .status(500)
-      .json({ result: false, error: "Missing or empty fields" });
+    return res.status(500).json({ result: false, error: "Missing or empty fields" });
   }
 
   try {
     const carts = await Cart.find();
-    const cart = carts[0];
-    const filterCart = cart.trips.filter((item) => item._id !== trip._id);
-    await Cart.updateOne({ _id: cart._id }, { trips: filterCart });
+    const { _id, trips } = carts[0];
+    const filteredCart = trips.filter((item) => item._id.toString() !== trip._id.toString());
+    await Cart.updateOne({ _id: _id }, { trips: filteredCart });
 
     res.json({ result: true, message: "Delete cart OK" });
   } catch (error) {

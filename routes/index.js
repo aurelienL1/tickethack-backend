@@ -26,20 +26,24 @@ router.post("/search", (req, res) => {
 });
 
 /* POST ADD TO CART. */
-
-router.post("/addtocart", (req, res) => {
+router.post("/addtocart", async function (req, res) {
   const { trip } = req.body;
   try {
     if (checkBody(req.body, ["trip"])) {
-      Cart.find({}).then((data) => {
-        const tripsCart = data[0].trips;
-        tripsCart.push(trip);
-        Cart.updateOne({ _id: data[0]._id }, { trips: tripsCart }).then(
-          (data) => {
-            res.json({ result: true, message: "Add to cart OK" });
-          }
-        );
-      });
+      const carts = await Cart.find();
+      //Cas ou on a pas de panier
+      if (carts.length === 0) {
+        const newCart = new Cart({
+          trips: [trip],
+        });
+        await newCart.save();
+        res.json({ result: true, message: "Create new cart OK" });
+      } else {
+        const { trips, _id } = carts[0];
+        trips.push(trip);
+        await Cart.updateOne({ _id }, { trips });
+        res.json({ result: true, message: "Add to cart OK" });
+      }
     } else {
       res.json({ result: false, error: "Missing or empty fields" });
     }
