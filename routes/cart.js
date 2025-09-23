@@ -2,6 +2,17 @@ var express = require("express");
 var router = express.Router();
 const { checkBody } = require("../modules/checkBody");
 const Booking = require("../models/bookings");
+const Trip = require("../models/trips");
+
+router.get("/", async function (req, res) {
+  try {
+    const trips = await Trip.find();
+    console.log(trips);
+    res.json({ result: true });
+  } catch (error) {
+    return res.json({ result: false, error: "Something wrong happened while purchasing." });
+  }
+});
 
 // POST /cart when user want to purchase trips
 router.post("/", async function (req, res) {
