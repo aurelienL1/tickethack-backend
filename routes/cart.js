@@ -4,6 +4,7 @@ const { checkBody } = require("../modules/checkBody");
 const Booking = require("../models/bookings");
 const Trip = require("../models/trips");
 
+// GET /cart
 router.get("/", async function (req, res) {
   try {
     const trips = await Trip.find();
@@ -30,7 +31,7 @@ router.post("/", async function (req, res) {
 
     await newBooking.save();
     res.json({ result: true, message: "Purchase successfully done." });
-   }catch (error) {
+  } catch (error) {
     return res.json({ result: false, error: "Something wrong happened while purchasing." });
   }
 });
