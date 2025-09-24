@@ -3,6 +3,7 @@ var router = express.Router();
 const Trip = require("../models/trips");
 const { checkBody } = require("../modules/checkBody");
 const Cart = require("../models/carts");
+const moment = require("moment");
 
 /* POST get trips for search */
 router.post("/search", async function (req, res) {
@@ -13,10 +14,14 @@ router.post("/search", async function (req, res) {
   }
 
   try {
+    const reformatedDate = moment(date).startOf("day");
     const trips = await Trip.find({
       departure: { $regex: new RegExp(departure, "i") },
       arrival: { $regex: new RegExp(arrival, "i") },
-      date: date,
+      date: {
+        $gte: reformatedDate.toDate(),
+        $lt: moment(reformatedDate).endOf("day").toDate(),
+      },
     });
     res.json({ result: true, trips });
   } catch (error) {
