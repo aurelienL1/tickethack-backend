@@ -43,7 +43,7 @@ router.post("/purchase", async function (req, res) {
 
 // DELETE cart ONE TRIP
 router.delete("/", async function (req, res) {
-  const { trip } = req.body;
+  const { tripId } = req.body;
   if (!checkBody(req.body, ["trip"])) {
     return res.json({ result: false, error: "Missing or empty fields" });
   }
@@ -51,7 +51,7 @@ router.delete("/", async function (req, res) {
   try {
     const cart = await Cart.findOne();
     const { _id, trips } = cart;
-    const filteredCart = trips.filter((item) => item._id.toString() !== trip._id.toString());
+    const filteredCart = trips.filter((item) => item._id.toString() !== tripId.toString());
     await Cart.updateOne({ _id: _id }, { trips: filteredCart });
 
     res.json({ result: true, message: "Delete trip from cart OK" });
