@@ -4,11 +4,11 @@ const { checkBody } = require("../modules/checkBody");
 const Booking = require("../models/bookings");
 const Cart = require("../models/carts");
 
-// GET /cart
+// GET cart
 router.get("/", async function (req, res) {
   try {
-    const trips = await Cart.find();
-    res.json({ result: true, trips });
+    const cart = await Cart.findOne();
+    res.json({ result: true, cart });
   } catch (error) {
     return res.json({
       result: false,
@@ -17,11 +17,11 @@ router.get("/", async function (req, res) {
   }
 });
 
-// POST /cart when user want to purchase trips
+// POST /purchase when user want to purchase trips
 router.post("/purchase", async function (req, res) {
   const { cart } = req.body;
   if (!checkBody(req.body, ["cart"])) {
-    return res.status(500).json({ result: false, error: "Missing or empty fields" });
+    return res.json({ result: false, error: "Missing or empty fields" });
   }
 
   try {
@@ -45,16 +45,16 @@ router.post("/purchase", async function (req, res) {
 router.delete("/", async function (req, res) {
   const { trip } = req.body;
   if (!checkBody(req.body, ["trip"])) {
-    return res.status(500).json({ result: false, error: "Missing or empty fields" });
+    return res.json({ result: false, error: "Missing or empty fields" });
   }
 
   try {
-    const carts = await Cart.find();
-    const { _id, trips } = carts[0];
+    const cart = await Cart.findOne();
+    const { _id, trips } = cart;
     const filteredCart = trips.filter((item) => item._id.toString() !== trip._id.toString());
     await Cart.updateOne({ _id: _id }, { trips: filteredCart });
 
-    res.json({ result: true, message: "Delete cart OK" });
+    res.json({ result: true, message: "Delete trip from cart OK" });
   } catch (error) {
     return res.json({
       result: false,

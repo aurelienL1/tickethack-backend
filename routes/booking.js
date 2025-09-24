@@ -3,11 +3,10 @@ var router = express.Router();
 const Booking = require("../models/bookings");
 
 /* GET all bookings */
-router.get("/", (req, res) => {
+router.get("/", async function (req, res) {
   try {
-    Booking.find({}).then((data) => {
-      res.json({ bookings: data });
-    });
+    const bookings = await Booking.find();
+    res.json({ result: true, bookings });
   } catch (error) {
     return res.json({
       result: false,
