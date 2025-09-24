@@ -5,8 +5,8 @@ const Booking = require("../models/bookings");
 /* GET all bookings */
 router.get("/", async function (req, res) {
   try {
-    const bookings = await Booking.find();
-    res.json({ result: true, bookings });
+    const booking = await Booking.findOne();
+    res.json({ result: true, booking });
   } catch (error) {
     return res.json({
       result: false,
